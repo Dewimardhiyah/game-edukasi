@@ -1,184 +1,385 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+/* Reset & Base Layout */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
 }
 
-.hero {
+body {
+  background-color: #0b0f19;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Mobile Frame Container - Otomatis Responsif Mengikuti Tinggi Layar */
+.mobile-container {
+  width: 100vw;
+  max-width: 412px;
+  height: 100vh;
+  max-height: 892px;
+  background-image: url('./assets/bg.png.jpeg');
+  background-size: cover;
+  background-position: center;
   position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#center {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
+  justify-content: space-between;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
 
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
+@media (min-width: 480px) {
+  .mobile-container {
+    border-radius: 32px;
+    height: 92vh;
+    max-height: 860px;
   }
 }
 
-#next-steps {
+/* --- Header Section --- */
+.game-header {
   display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.2vh 3vw;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
+.player-profile {
   display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
+  align-items: center;
+  background: rgba(15, 76, 129, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px 4px 4px;
+  border-radius: 30px;
+  color: #fff;
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+.avatar-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #38ef7d;
+  border: 2px solid #fff;
+  overflow: hidden;
+  margin-right: 6px;
 }
 
-.ticks {
-  position: relative;
+.avatar-img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+.role-label {
+  font-size: 8px;
+  color: #a0c4ff;
+  line-height: 1;
+}
+
+.user-name {
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.xp-bar-container {
+  width: 60px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  margin: 2px 0;
+  overflow: hidden;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: #20bf6b;
+}
+
+.level-text {
+  font-size: 8px;
+  font-weight: 700;
+  color: #d1d8e0;
+}
+
+/* Resource Badges */
+.resource-counter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-badge {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 76, 129, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 3px 6px 3px 8px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.add-btn {
+  background: #20bf6b;
+  border: none;
+  color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-left: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.settings-btn {
+  background: rgba(15, 76, 129, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Daily Mission Card --- */
+.daily-mission-card {
+  align-self: flex-end;
+  margin-right: 3vw;
+  margin-top: -0.5vh;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  max-width: 180px;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.mission-icon {
+  font-size: 16px;
+  background: #e1f5fe;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.mission-title {
+  font-size: 9px;
+  font-weight: 800;
+  color: #1e3799;
+}
+
+.mission-desc {
+  font-size: 7.5px;
+  color: #4b6584;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.mission-progress-bar {
+  width: 100%;
+  height: 3px;
+  background: #dcdde1;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mission-progress-fill {
+  height: 100%;
+  background: #20bf6b;
+}
+
+.mission-status {
+  font-size: 8px;
+  font-weight: 800;
+  color: #4b6584;
+}
+
+/* --- Main Area Viewport --- */
+.main-viewport {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- Adventure Scene Layout (Otomatis Responsif) --- */
+.adventure-scene {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 5;
+}
+
+.adventure-scene__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  z-index: 7;
+  /* Menggunakan clamp agar ukuran judul otomatis menyesuaikan lebar layar secara halus */
+  width: clamp(260px, 78vw, 330px);
+}
+
+/* Judul Game */
+.game-title-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.game-title-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Tombol Mulai Petualangan - Menggunakan proporsi persentase tinggi agar selalu mengikut di bawah judul */
+.btn-custom.adventure-scene__start {
+  background: linear-gradient(180deg, #ffe169 0%, #fbc531 50%, #e1b12c 100%);
+  border: 3.5px solid #ffffff;
+  border-bottom: 5px solid #3b318f;
+  border-radius: 40px;
+  padding: 1vh 4vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  width: 82%;
+  max-width: 260px;
+  /* Jarak otomatis naik menempel pas di bawah pita judul tanpa peduli ukuran layar */
+  margin-top: -14%; 
+  z-index: 8;
+  position: relative;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 11px;
+  color: #1e3799;
+}
+
+.btn-text {
+  font-size: clamp(13px, 3.8vw, 15px);
+  font-weight: 900;
+  color: #1e3799;
+  letter-spacing: -0.2px;
+}
+
+/* Papan Kayu (ExploreSign) - Menggunakan persentase lebar layar (vw) agar responsif */
+.explore-sign-container {
+  position: absolute;
+  left: 3vw;
+  bottom: 2vh;
+  width: 32vw;
+  max-width: 135px;
+  min-width: 100px;
+  z-index: 6;
+}
+
+.sign-img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Karakter Maskot - Menggunakan persentase lebar layar (vw) agar otomatis proporsional */
+.character-area {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-38%);
+  bottom: 0.5vh;
+  width: 44vw;
+  max-width: 185px;
+  min-width: 140px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.mascot-img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25));
+}
+
+/* --- Bottom Navigation --- */
+.bottom-navigation {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1vh 0 1.5vh 0;
+  border-top-left-radius: 26px;
+  border-top-right-radius: 26px;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #a5b1c2;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.nav-icon-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin-bottom: 2px;
+  filter: grayscale(100%) opacity(0.5);
+  transition: filter 0.2s ease;
+}
+
+.nav-item.active {
+  color: #4b7bec;
+}
+
+.nav-item.active .nav-icon-img {
+  filter: none;
 }
