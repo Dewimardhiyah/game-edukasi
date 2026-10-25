@@ -16,7 +16,7 @@ body {
   overflow: hidden;
 }
 
-/* Mobile Frame Container - Otomatis Responsif Mengikuti Tinggi Layar */
+/* Mobile Frame Container */
 .mobile-container {
   width: 100vw;
   max-width: 412px;
@@ -41,14 +41,15 @@ body {
   }
 }
 
-/* --- Header Section --- */
+/* --- Header Section (Merenggang Pas ke Tepi) --- */
 .game-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 1.2vh 3vw;
+  padding: 12px 14px;
   z-index: 10;
   flex-shrink: 0;
+  width: 100%;
 }
 
 .player-profile {
@@ -63,8 +64,8 @@ body {
 }
 
 .avatar-wrapper {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #38ef7d;
   border: 2px solid #fff;
@@ -96,7 +97,7 @@ body {
 }
 
 .xp-bar-container {
-  width: 60px;
+  width: 65px;
   height: 4px;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 3px;
@@ -128,7 +129,7 @@ body {
   background: rgba(15, 76, 129, 0.85);
   border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 20px;
-  padding: 3px 6px 3px 8px;
+  padding: 3px 7px 3px 8px;
   color: #fff;
   font-weight: 800;
   font-size: 11px;
@@ -150,8 +151,8 @@ body {
 .settings-btn {
   background: rgba(15, 76, 129, 0.85);
   border: 2px solid rgba(255, 255, 255, 0.5);
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   color: white;
   cursor: pointer;
@@ -160,19 +161,19 @@ body {
   justify-content: center;
 }
 
-/* --- Daily Mission Card --- */
+/* --- Daily Mission Card (Tepat di Bawah Badge Kanan) --- */
 .daily-mission-card {
   align-self: flex-end;
-  margin-right: 3vw;
-  margin-top: -0.5vh;
+  margin-right: 14px;
+  margin-top: -2px;
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  padding: 6px 10px;
+  border-radius: 14px;
+  padding: 6px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-  max-width: 180px;
+  max-width: 195px;
   z-index: 10;
   flex-shrink: 0;
 }
@@ -185,13 +186,13 @@ body {
 }
 
 .mission-title {
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 800;
   color: #1e3799;
 }
 
 .mission-desc {
-  font-size: 7.5px;
+  font-size: 8px;
   color: #4b6584;
   line-height: 1.1;
   margin-bottom: 2px;
@@ -199,7 +200,7 @@ body {
 
 .mission-progress-bar {
   width: 100%;
-  height: 3px;
+  height: 3.5px;
   background: #dcdde1;
   border-radius: 2px;
   overflow: hidden;
@@ -211,7 +212,7 @@ body {
 }
 
 .mission-status {
-  font-size: 8px;
+  font-size: 8.5px;
   font-weight: 800;
   color: #4b6584;
 }
@@ -225,7 +226,7 @@ body {
   overflow: hidden;
 }
 
-/* --- Adventure Scene Layout (Otomatis Responsif) --- */
+/* --- Adventure Scene Layout --- */
 .adventure-scene {
   width: 100%;
   height: 100%;
@@ -241,11 +242,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 88%;
+  max-width: 330px;
   position: relative;
   z-index: 7;
-  /* Menggunakan clamp agar ukuran judul otomatis menyesuaikan lebar layar secara halus */
-  width: clamp(260px, 78vw, 330px);
 }
 
 /* Judul Game */
@@ -262,23 +262,22 @@ body {
   display: block;
 }
 
-/* Tombol Mulai Petualangan - Menggunakan proporsi persentase tinggi agar selalu mengikut di bawah judul */
+/* Tombol Mulai Petualangan - Rapat Pas di Bawah Pita Biru */
 .btn-custom.adventure-scene__start {
   background: linear-gradient(180deg, #ffe169 0%, #fbc531 50%, #e1b12c 100%);
   border: 3.5px solid #ffffff;
   border-bottom: 5px solid #3b318f;
   border-radius: 40px;
-  padding: 1vh 4vw;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
   width: 82%;
   max-width: 260px;
-  /* Jarak otomatis naik menempel pas di bawah pita judul tanpa peduli ukuran layar */
-  margin-top: -14%; 
+  margin-top: -8px; /* Jarak pas setelah bagian kosong dipotong */
   z-index: 8;
   position: relative;
 }
@@ -296,38 +295,38 @@ body {
 }
 
 .btn-text {
-  font-size: clamp(13px, 3.8vw, 15px);
+  font-size: 15px;
   font-weight: 900;
   color: #1e3799;
   letter-spacing: -0.2px;
 }
 
-/* Papan Kayu (ExploreSign) - Menggunakan persentase lebar layar (vw) agar responsif */
+/* Papan Kayu (ExploreSign) di Kiri Bawah */
 .explore-sign-container {
   position: absolute;
-  left: 3vw;
-  bottom: 2vh;
-  width: 32vw;
-  max-width: 135px;
-  min-width: 100px;
+  left: 12px;
+  bottom: 22px;
+  width: 34vw;
+  max-width: 140px;
+  min-width: 110px;
   z-index: 6;
 }
 
 .sign-img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.3));
 }
 
-/* Karakter Maskot - Menggunakan persentase lebar layar (vw) agar otomatis proporsional */
+/* Karakter Maskot di Tengah Bawah Jalur Tanah */
 .character-area {
   position: absolute;
   left: 50%;
-  transform: translateX(-38%);
-  bottom: 0.5vh;
-  width: 44vw;
-  max-width: 185px;
-  min-width: 140px;
+  transform: translateX(-40%);
+  bottom: 8px;
+  width: 45vw;
+  max-width: 190px;
+  min-width: 150px;
   z-index: 5;
   pointer-events: none;
 }
@@ -335,7 +334,7 @@ body {
 .mascot-img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.25));
 }
 
 /* --- Bottom Navigation --- */
@@ -345,9 +344,9 @@ body {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 1vh 0 1.5vh 0;
-  border-top-left-radius: 26px;
-  border-top-right-radius: 26px;
+  padding: 10px 0 14px 0;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
   z-index: 10;
   width: 100%;
