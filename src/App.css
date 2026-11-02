@@ -382,3 +382,292 @@ body {
 .nav-item.active .nav-icon-img {
   filter: none;
 }
+
+
+/* =====================================================
+   SCENE 2 - PETA PETUALANGAN
+   Satu layar penuh, tanpa scroll. Semua ukuran memakai
+   satuan relatif (%, cqw, cqh) sehingga ikut mengecil
+   di layar mobile kecil.
+===================================================== */
+
+/* Latar khusus Scene 2 */
+.mobile-container--map {
+  background-image: url('./assets/bg2.jpeg');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Misi harian: lebih kecil dan naik mendekati badge */
+.mobile-container--map .daily-mission-card {
+  width: 132px;
+  max-width: 34vw;
+  min-width: 112px;
+  padding: 4px 7px;
+  margin-top: -9px;
+  margin-right: 10px;
+  gap: 5px;
+  border-radius: 11px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
+}
+.mobile-container--map .mission-icon { font-size: 11px; padding: 2px 3px; border-radius: 5px; }
+.mobile-container--map .mission-title { font-size: 8px; }
+.mobile-container--map .mission-desc { font-size: 6px; margin-bottom: 2px; }
+.mobile-container--map .mission-progress-bar { height: 3px; }
+.mobile-container--map .mission-status { font-size: 6.5px; display: flex; align-items: center; gap: 1px; }
+
+.mobile-container--map .main-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Scene: mengisi seluruh area antara misi harian dan navigasi bawah */
+.map-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+  --title-offset: 58px; /* jarak area pulau dari atas scene */
+}
+
+/* Judul peta - diperbesar, di tengah atas */
+.map-title {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 8;
+  pointer-events: none;
+}
+.map-title__image {
+  display: block;
+  width: min(65cqw, 250px);
+  height: auto;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.25));
+}
+
+/* Area lima pulau: memenuhi sisa layar; ukuran pulau dihitung di IslandMap.tsx */
+.map-world {
+  position: absolute;
+  top: var(--title-offset);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  isolation: isolate;
+  --iw: 150px; /* lebar pulau, di-set dari JS */
+}
+
+/* Jalur petualangan */
+.map-path {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+  overflow: visible;
+}
+.map-path__line {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.4px;
+  stroke-dasharray: 0.1px 7px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+}
+
+/* Pulau (tanpa stacking context sendiri supaya z-index anak tetap bekerja) */
+.map-island {
+  position: absolute;
+  aspect-ratio: 100 / 86; /* kotak sama untuk semua pulau */
+}
+.map-island__image {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Label pulau */
+.map-island .island-label {
+  position: absolute;
+  top: -8%;
+  left: 0;
+  width: 80%;
+  aspect-ratio: 854 / 292; /* ukuran label sama untuk semua pulau */
+  z-index: 5;
+  pointer-events: none;
+}
+.island-label img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+}
+
+/* Nomor level: ukuran proporsional terhadap pulau */
+.level-node {
+  position: absolute;
+  width: 15%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: calc(var(--iw) * 0.012) solid #fff;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  color: #fff;
+  font-size: calc(var(--iw) * 0.07);
+  font-weight: 900;
+  line-height: 1;
+  z-index: 6;
+  box-shadow: 0 calc(var(--iw) * 0.013) 0 #254665, 0 calc(var(--iw) * 0.02) calc(var(--iw) * 0.03) rgba(0, 0, 0, 0.25);
+}
+.level-node--unlocked {
+  background: linear-gradient(145deg, #45baff, #0870d6);
+  cursor: pointer;
+}
+.level-node--locked {
+  background: linear-gradient(145deg, #a8bfd0, #536f87);
+  cursor: not-allowed;
+}
+.level-lock {
+  font-size: calc(var(--iw) * 0.042);
+  line-height: 1;
+  margin-top: calc(var(--iw) * -0.004);
+}
+
+/* Kartu koleksi bentuk (kiri bawah, tidak menutupi pulau 5) */
+.collection-card {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: min(31cqw, 132px);
+  padding: 5px 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 9;
+  cursor: pointer;
+  text-align: left;
+}
+.collection-chest {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.collection-chest img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.collection-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.collection-content strong { font-size: 8.5px; color: #174c89; white-space: nowrap; }
+.collection-content small { font-size: 6.5px; color: #315c88; }
+.collection-progress { width: 100%; height: 4px; border-radius: 10px; background: #d5e5f1; overflow: hidden; display: block; }
+.collection-progress span { display: block; height: 100%; border-radius: 10px; background: #2388eb; }
+.collection-arrow { font-size: 18px; font-weight: bold; color: #174c89; line-height: 1; }
+
+.mobile-container--map .bottom-navigation {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Layar sangat pendek / sempit */
+@media (max-height: 700px) {
+  .map-scene { --title-offset: 52px; }
+  .map-title__image { width: min(62cqw, 250px); }
+}
+@media (max-width: 360px) {
+  .mobile-container--map .daily-mission-card { min-width: 104px; }
+  .collection-card { width: 112px; }
+}
+
+
+/* =====================================================
+   TEMA GAME - token warna bersama (Scene 3-6)
+===================================================== */
+:root {
+  --game-ink: #1e3799;
+  --game-blue-900: #12356f;
+  --game-blue-700: #1e56b8;
+  --game-blue-500: #2388eb;
+  --game-yellow: #fbc531;
+  --game-green: #2fc15a;
+  --game-red: #e23d4b;
+}
+
+/* Layar permainan (detail, eksplorasi, soal, hasil): tanpa header & navigasi bawah */
+.mobile-container--game {
+  justify-content: flex-start;
+}
+
+/* =====================================================
+   PETA - status level 'completed' + bintang di atas node
+===================================================== */
+.level-node--completed {
+  background: linear-gradient(145deg, #6fe58b, #1f9f46);
+  cursor: pointer;
+}
+.level-node--unlocked {
+  animation: level-pulse 1.8s ease-in-out infinite;
+}
+@keyframes level-pulse {
+  0%, 100% { box-shadow: 0 calc(var(--iw) * 0.013) 0 #254665, 0 0 0 0 rgba(255, 255, 255, 0.7); }
+  50% { box-shadow: 0 calc(var(--iw) * 0.013) 0 #254665, 0 0 0 calc(var(--iw) * 0.03) rgba(255, 255, 255, 0); }
+}
+.level-node__stars {
+  position: absolute;
+  bottom: calc(100% + var(--iw) * 0.005);
+  left: 50%;
+  display: flex;
+  gap: 0;
+  font-size: calc(var(--iw) * 0.06);
+  line-height: 1;
+  transform: translateX(-50%);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+.level-node__stars .is-on { color: #ffd23f; }
+.level-node__stars .is-off { color: #b9c7d4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .level-node--unlocked { animation: none; }
+}
+
+/* =====================================================
+   Penampung tab yang belum dibuat
+===================================================== */
+.coming-soon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.coming-soon__card {
+  padding: 22px 20px;
+  border: 3px solid #fff;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--game-blue-900);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+.coming-soon__card h1 { margin: 0 0 6px; font-size: 26px; font-weight: 900; }
+.coming-soon__card p { font-size: 15px; font-weight: 600; line-height: 1.4; color: #4b6584; }

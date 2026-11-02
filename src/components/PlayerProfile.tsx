@@ -1,4 +1,9 @@
-export default function PlayerProfile() {
+interface PlayerProfileProps {
+  level?: number;
+  xpPercent?: number;
+}
+
+export default function PlayerProfile({ level = 3, xpPercent = 60 }: PlayerProfileProps) {
   return (
     <div className="player-profile">
       <div className="avatar-wrapper">
@@ -10,11 +15,11 @@ export default function PlayerProfile() {
       </div>
       <div className="profile-info">
         <span className="role-label">Siswa</span>
-        <span className="user-name">Rizki</span>
+        <span className="user-name">Dewi</span>
         <div className="xp-bar-container">
-          <div className="xp-bar-fill" style={{ width: '60%' }} />
+          <div className="xp-bar-fill" style={{ width: `${xpPercent}%` }} />
         </div>
-        <span className="level-text">Level 3</span>
+        <span className="level-text">Level {level}</span>
       </div>
     </div>
   );

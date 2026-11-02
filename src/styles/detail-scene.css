@@ -1,0 +1,105 @@
+/* =====================================================
+   SCENE 3 - DETAIL LEVEL (Gerbang Level)
+===================================================== */
+.detail-scene { align-items: center; }
+
+.detail-scene__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+.detail-scene__top,
+.detail-scene__heading,
+.detail-scene__card { position: relative; z-index: 1; }
+
+.detail-scene__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 14px 0;
+}
+.detail-scene__chips { display: flex; gap: 8px; }
+
+.detail-scene__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.detail-scene__subtitle {
+  margin: 0;
+  padding: 6px 22px 7px;
+  border: 3px solid #fff;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #3d9bff, #1f64c9);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  box-shadow: 0 4px 0 #134a96, 0 8px 14px rgba(0, 0, 0, 0.2);
+}
+
+.detail-scene__card {
+  width: min(86%, 340px);
+  margin-top: 16px;
+  padding: 14px 16px 12px;
+  border: 3px solid #fff;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.94);
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+.detail-scene__goal-label { margin: 0; font-size: 15px; font-weight: 900; color: var(--game-blue-900); }
+.detail-scene__goal { margin: 2px 0 10px; font-size: 15px; font-weight: 600; line-height: 1.35; color: #34495e; }
+.detail-scene__stars { display: flex; margin-bottom: 10px; }
+.detail-scene__facts {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.detail-scene__facts li {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border-radius: 14px;
+  background: #e4f1ff;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--game-blue-700);
+}
+
+.detail-scene__mascot {
+  position: absolute;
+  z-index: 1;
+  left: 4%;
+  bottom: 14%;
+  width: min(46%, 190px);
+  height: auto;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+}
+
+.detail-scene__action {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 22px;
+  width: min(66%, 270px);
+  transform: translateX(-50%);
+}
+.detail-scene__action .game-btn { font-size: 24px; min-height: 58px; }
+
+@media (max-height: 640px) {
+  .detail-scene__mascot { width: 36%; bottom: 17%; }
+  .detail-scene__card { margin-top: 10px; }
+}

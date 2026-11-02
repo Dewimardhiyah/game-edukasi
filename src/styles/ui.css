@@ -1,0 +1,180 @@
+/* =====================================================
+   UI BERSAMA - dipakai Scene 3-6
+   (tombol, ribbon kayu, chip, bintang, modal jeda)
+===================================================== */
+
+/* Layar penuh di dalam .mobile-container */
+.game-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--game-ink);
+}
+
+/* ---------- Tombol utama ---------- */
+.game-btn {
+  min-height: 52px;
+  padding: 10px 28px;
+  border: 3.5px solid #fff;
+  border-radius: 40px;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.game-btn--block { width: 100%; }
+.game-btn--yellow {
+  background: linear-gradient(180deg, #ffe169 0%, #fbc531 55%, #e1b12c 100%);
+  color: var(--game-ink);
+  box-shadow: 0 5px 0 #3b318f, 0 9px 16px rgba(0, 0, 0, 0.25);
+}
+.game-btn--green {
+  background: linear-gradient(180deg, #5be37d 0%, #2fc15a 55%, #1f9f46 100%);
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(0, 80, 30, 0.45);
+  box-shadow: 0 5px 0 #136d30, 0 9px 16px rgba(0, 0, 0, 0.25);
+}
+.game-btn--white {
+  background: linear-gradient(180deg, #fff 0%, #e8f3ff 100%);
+  color: #1e56b8;
+  border-color: #cfe4fb;
+  box-shadow: 0 4px 0 #9fc3ea, 0 8px 14px rgba(0, 0, 0, 0.18);
+}
+.game-btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+.game-btn:disabled {
+  opacity: 0.55;
+  filter: grayscale(0.6);
+  cursor: not-allowed;
+}
+
+/* ---------- Tombol bulat (kembali / jeda) ---------- */
+.game-round-btn {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff, #dcecff);
+  color: #1e56b8;
+  box-shadow: 0 4px 0 #9fc3ea, 0 6px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+.game-round-btn--blue {
+  background: linear-gradient(180deg, #4aa8ff, #1f6fd6);
+  color: #fff;
+  box-shadow: 0 4px 0 #134a96, 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.game-round-btn:active { transform: translateY(2px); }
+
+/* ---------- Chip statistik ---------- */
+.game-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px 5px 9px;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  border-radius: 20px;
+  background: rgba(15, 76, 129, 0.88);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  backdrop-filter: blur(6px);
+}
+
+/* ---------- Ribbon kayu ---------- */
+.game-ribbon {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 6px 38px 8px;
+  border: 3px solid #7a4118;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #e19a52 0%, #c27a3a 55%, #a9602a 100%);
+  color: #fff;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-shadow: 0 3px 0 #7a4118;
+  box-shadow: 0 5px 0 #6b3714, 0 10px 16px rgba(0, 0, 0, 0.25);
+}
+.game-ribbon::before,
+.game-ribbon::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: -10px;
+  width: 30px;
+  background: #8a4b1e;
+  border: 3px solid #7a4118;
+  z-index: -1;
+}
+.game-ribbon::before {
+  left: -22px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 34% 50%);
+}
+.game-ribbon::after {
+  right: -22px;
+  clip-path: polygon(0 0, 100% 0, 66% 50%, 100% 100%, 0 100%);
+}
+.game-ribbon--lg { font-size: 32px; padding: 8px 40px 10px; }
+
+/* ---------- Bintang ---------- */
+.stars { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.stars__item { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25)); }
+.stars__item--pop {
+  opacity: 0;
+  transform: scale(0.2);
+  animation: star-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+}
+@keyframes star-pop {
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ---------- Modal jeda ---------- */
+.game-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(10, 30, 60, 0.55);
+  backdrop-filter: blur(3px);
+}
+.game-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 300px);
+  padding: 22px 20px 20px;
+  border: 4px solid #fff;
+  border-radius: 26px;
+  background: #f4faff;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+.game-modal__title { margin: 0; font-size: 28px; font-weight: 900; color: var(--game-blue-700); }
+.game-modal__text { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #4b6584; line-height: 1.35; }
+
+/* ---------- Fokus keyboard & gerak ---------- */
+.game-screen button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px #1e56b8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-screen *, .game-screen *::before, .game-screen *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

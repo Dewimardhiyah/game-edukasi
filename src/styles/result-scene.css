@@ -1,0 +1,117 @@
+/* =====================================================
+   SCENE 6 - HASIL LEVEL
+===================================================== */
+.result-scene { align-items: center; background: linear-gradient(180deg, #2fa8ff 0%, #1f9a64 100%); }
+
+.result-scene__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}
+.result-scene__hero,
+.result-card,
+.result-scene__actions { position: relative; z-index: 2; }
+
+/* Confetti */
+.result-scene__confetti { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.result-scene__confetti span {
+  position: absolute;
+  top: -16px;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confetti-fall 2.6s ease-in infinite;
+}
+@keyframes confetti-fall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(520px) rotate(540deg); }
+}
+
+.result-scene__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 34px;
+}
+.result-scene__stars { gap: 4px; margin-bottom: -2px; }
+.result-scene__stars .stars__item:nth-child(2) { transform-origin: center; margin-top: -14px; }
+.result-scene__mascot {
+  width: min(40vw, 170px);
+  max-height: 22vh;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.3));
+  animation: mascot-hop 1.2s ease-in-out infinite;
+}
+@keyframes mascot-hop {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.result-card {
+  width: min(88%, 350px);
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 3px solid #fff;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+.result-card__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+.result-card__stat {
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: #eaf4ff;
+}
+.result-card__stat dt { font-size: 13px; font-weight: 800; color: #4b6584; }
+.result-card__stat dd { margin: 2px 0 0; font-size: 20px; font-weight: 900; color: var(--game-blue-900); }
+.result-card__stat--answers { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; }
+.result-card__stat--answers dd { margin: 0; font-size: 18px; color: #1b8f3e; }
+
+.result-card__breakdown { margin: 10px 0 0; padding: 0; list-style: none; }
+.result-card__breakdown li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 2px;
+  border-top: 1px dashed #c8dcee;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4b6584;
+}
+.result-card__breakdown b { color: var(--game-blue-900); }
+
+.result-scene__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(88%, 350px);
+  margin-top: auto;
+  padding-bottom: 20px;
+}
+.result-scene__link {
+  border: 0;
+  background: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+@media (max-height: 700px) {
+  .result-scene__mascot { max-height: 16vh; }
+  .result-scene__stars svg { width: 50px; height: 50px; }
+  .result-card__breakdown { display: none; }
+}

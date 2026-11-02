@@ -1,17 +1,22 @@
 import Icon from './Icon';
 
-export default function ResourceCounter() {
+interface ResourceCounterProps {
+  stars?: number;
+  diamonds?: number;
+}
+
+export default function ResourceCounter({ stars = 120, diamonds = 45 }: ResourceCounterProps) {
   return (
     <div className="resource-counter">
       <div className="stat-badge star-badge">
         <Icon name="star" />
-        <span className="stat-value">120</span>
+        <span className="stat-value">{stars}</span>
         <button className="add-btn">+</button>
       </div>
 
       <div className="stat-badge diamond-badge">
         <Icon name="diamond" />
-        <span className="stat-value">45</span>
+        <span className="stat-value">{diamonds}</span>
         <button className="add-btn">+</button>
       </div>
 
