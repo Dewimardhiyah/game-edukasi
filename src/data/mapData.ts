@@ -26,10 +26,9 @@ const SIDE_MARGIN = 0.02;            // jarak pulau dari tepi layar
 const LABEL_ROOM = 0.08;             // ruang label di atas pulau 1 (x tinggi pulau)
 const MIN_STEP = 0.52;               // jarak antar pulau minimum (x tinggi pulau)
 
-// Dua baris tiga level - posisi sama di semua pulau
+// Tiga level dalam satu baris - posisi sama di semua pulau
 const GRID: [number, number][] = [
-  [25, 43], [50, 43], [75, 43],
-  [25, 63], [50, 63], [75, 63],
+  [25, 53], [50, 53], [75, 53],
 ];
 
 const createLevels = (from: number): MapLevel[] =>
@@ -41,12 +40,12 @@ const createLevels = (from: number): MapLevel[] =>
 
 const images = [island1, island2, island3, island4, island5];
 
-// Zig-zag: kiri, kanan, kiri, kanan, kiri. Level 1-6, 7-12, ... 25-30
+// Zig-zag: kiri, kanan, kiri, kanan, kiri. Tiga level per pulau.
 export const mapIslands: MapIsland[] = images.map((image, i) => ({
   id: i + 1,
   image,
   side: i % 2 === 0 ? 'left' : 'right',
-  levels: createLevels(i * 6 + 1),
+  levels: createLevels(i * 3 + 1),
 }));
 
 export interface IslandLayout {

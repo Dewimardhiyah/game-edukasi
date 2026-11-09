@@ -7,10 +7,14 @@
  *   4. Penerapan dalam kehidupan-> gambar benda + pilih nama bentuk
  */
 import type { ChoiceOption, QuizQuestion } from './levels';
+import atapRumah from '../assets/atap.png';
 import { OBJ } from './images';
 import type { ObjKey } from './images';
 import { SHAPE_META } from './shapes';
 import type { ShapeKind } from './shapes';
+import door from '../assets/pintu.png';
+import bicycleWheel from '../assets/rodasepeda.jfif';
+import tile from '../assets/ubin.png';
 
 const ID = 'abcd';
 
@@ -21,12 +25,14 @@ function grid(
   prompt: string,
   items: [ObjKey, boolean][],
   explanation: string,
+  visual?: QuizQuestion['visual'],
 ): QuizQuestion {
   return {
     id,
     type,
     layout: 'grid',
     prompt,
+    visual,
     options: items.map(([key, correct], i) => ({
       id: ID[i],
       label: OBJ[key].label,
@@ -75,58 +81,64 @@ function shapes(
 }
 
 const ALL: ShapeKind[] = ['lingkaran', 'persegi', 'segitiga', 'persegi-panjang'];
+const BASIC_SHAPES: ShapeKind[] = ['segitiga', 'persegi', 'lingkaran'];
 const img = (k: ObjKey) => ({ image: OBJ[k].src });
 
 export const PULAU1_QUESTIONS: Record<number, QuizQuestion[]> = {
   /* Level 1 - Mengenal Lingkaran dan Persegi */
   1: [
-    grid('1-1', 'single', 'Manakah benda yang berbentuk lingkaran?',
-      [['jam', true], ['tenda', false], ['buku', false], ['pintu', false]],
-      'Lingkaran itu bulat penuh, tanpa sudut dan tanpa sisi lurus. Jam dinding bentuknya bundar.'),
-    grid('1-2', 'multi', 'Pilih semua benda yang berbentuk lingkaran!',
-      [['bola', true], ['koin', true], ['papanTulis', false], ['pintu', false]],
-      'Bola dan koin bundar. Papan tulis dan pintu punya sudut di pojoknya, jadi bukan lingkaran.'),
-    shapes('1-3', 'Permukaan Rubik jika dilihat dari satu sisi berbentuk apa?', ALL, 'persegi',
-      'Setiap sisi Rubik punya 4 sisi sama panjang dan 4 sudut siku-siku. Itu ciri persegi.', img('rubik')),
-    shapes('1-4', 'Uang logam ini berbentuk apa?', ALL, 'lingkaran',
-      'Uang logam itu bulat, tidak punya sudut sama sekali. Jadi bentuknya lingkaran.', img('koin')),
-    shapes('1-5', 'Ubin lantai yang keempat sisinya sama panjang berbentuk apa?', ALL, 'persegi',
-      'Empat sisi sama panjang dan empat sudut siku-siku adalah ciri persegi.', img('persegi')),
+    shapes('1-1', 'Manakah gambar yang berbentuk segitiga?', BASIC_SHAPES, 'segitiga',
+      'Segitiga memiliki tiga sisi lurus dan tiga sudut.'),
+    shapes('1-2', 'Bangun datar manakah yang berbentuk bulat?', BASIC_SHAPES, 'lingkaran',
+      'Lingkaran berbentuk bulat dan tidak memiliki sudut.'),
+    {
+      ...shapes('1-3', 'Pilih gambar yang merupakan persegi.', BASIC_SHAPES, 'persegi',
+        'Persegi memiliki empat sisi sama panjang dan empat sudut siku-siku.'),
+      optionsImageOnly: true,
+    },
+    shapes('1-4', 'Bentuk apa yang memiliki tiga sisi?', BASIC_SHAPES, 'segitiga',
+      'Segitiga memiliki tiga sisi.'),
+    shapes('1-5', 'Bangun datar apa yang memiliki empat sisi sama panjang?',
+      ['persegi', 'persegi-panjang', 'segitiga'], 'persegi',
+      'Persegi memiliki empat sisi yang sama panjang.'),
   ],
 
   /* Level 2 - Mengenal Segitiga dan Persegi Panjang */
   2: [
-    grid('2-1', 'single', 'Manakah benda yang berbentuk segitiga?',
-      [['pizza', true], ['bola', false], ['jam', false], ['koin', false]],
-      'Potongan pizza punya 3 sisi lurus dan 3 sudut. Itu segitiga.'),
-    grid('2-2', 'multi', 'Pilih semua benda yang berbentuk persegi panjang!',
-      [['pintu', true], ['buku', true], ['papanTulis', true], ['jam', false]],
-      'Pintu, buku, dan papan tulis punya 4 sisi dan 4 sudut siku-siku. Jam dinding bundar, jadi bukan.'),
-    shapes('2-3', 'Bagian depan tenda pramuka ini berbentuk apa?', ALL, 'segitiga',
-      'Tenda pramuka meruncing ke atas dengan 3 sisi lurus: bentuknya segitiga.', img('tenda')),
-    shapes('2-4', 'Papan tulis di kelas berbentuk apa?', ALL, 'persegi-panjang',
-      'Papan tulis lebih lebar daripada tingginya, dengan 4 sudut siku-siku: persegi panjang.', img('papanTulis')),
-    text('2-5', 'Berapa banyak sisi yang dimiliki oleh segitiga?',
-      [['3', true], ['4', false], ['5', false], ['6', false]],
-      'Nama "segitiga" sudah jadi petunjuk: ada tiga sisi lurus dan tiga sudut.', { shape: 'segitiga' }),
+    text('2-1', 'Berapa jumlah sisi pada segitiga?',
+      [['3', true], ['4', false], ['0', false]],
+      'Segitiga memiliki tiga sisi lurus.', { shape: 'segitiga' }),
+    text('2-2', 'Berapa jumlah titik sudut pada persegi?',
+      [['4', true], ['3', false], ['0', false]],
+      'Persegi memiliki empat titik sudut.', { shape: 'persegi' }),
+    text('2-3', 'Berapa jumlah titik sudut pada lingkaran?',
+      [['0', true], ['1', false], ['4', false]],
+      'Lingkaran tidak memiliki titik sudut.', { shape: 'lingkaran' }),
+    shapes('2-4', 'Bangun datar apa yang memiliki empat sisi?',
+      ['persegi', 'segitiga', 'lingkaran'], 'persegi',
+      'Persegi memiliki empat sisi.'),
+    shapes('2-5', 'Bangun datar apa yang tidak memiliki titik sudut?',
+      ['lingkaran', 'segitiga', 'persegi'], 'lingkaran',
+      'Lingkaran tidak memiliki titik sudut.'),
   ],
 
-  /* Level 3 - Identifikasi Gambar dan Objek */
+  /* Level 3 - Penerapan: menemukan bentuk di sekitar kita */
   3: [
-    grid('3-1', 'single', 'Benda mana yang permukaannya berbentuk persegi panjang?',
-      [['papanTulis', true], ['bola', false], ['koin', false], ['pizza', false]],
-      'Papan tulis punya 4 sisi dengan sudut siku-siku. Dua sisi yang berhadapan sama panjang.'),
-    text('3-2', 'Manakah kelompok benda yang seluruhnya berbentuk lingkaran?',
-      [['Koin, piring, CD musik', true], ['Buku, meja, papan tulis', false],
-        ['Penggaris, tenda, topi', false], ['Pintu, jendela, lemari', false]],
-      'Koin, piring, dan CD sama-sama bundar. Kelompok lain berisi benda yang punya sudut.'),
-    grid('3-3', 'single', 'Benda mana yang berbentuk dasar segitiga?',
-      [['penggaris', true], ['jam', false], ['pintu', false], ['bola', false]],
-      'Penggaris segitiga punya 3 sisi lurus dan 3 sudut, salah satunya sudut siku-siku.'),
-    shapes('3-4', 'Atap rumah ini berbentuk apa?', ALL, 'segitiga',
-      'Atap rumah meruncing dengan 3 sisi lurus. Itu bentuk segitiga.', img('rumah')),
-    shapes('3-5', 'Papan catur terdiri dari kotak-kotak berbentuk apa?', ALL, 'persegi',
-      'Setiap kotak papan catur punya 4 sisi sama panjang: persegi.'),
+    grid('3-1', 'single', 'Jam dinding berbentuk bulat menyerupai bangun datar apa?',
+      [['lingkaran', true], ['segitiga', false], ['persegi', false]],
+      'Jam dinding berbentuk bulat seperti lingkaran.', img('jam')),
+    grid('3-2', 'single', 'Atap rumah pada gambar menyerupai bentuk apa?',
+      [['segitiga', true], ['persegiPanjang', false], ['lingkaran', false]],
+      'Atap rumah berbentuk segitiga.', { image: atapRumah }),
+    grid('3-3', 'single', 'Ubin dengan empat sisi sama panjang menyerupai apa?',
+      [['persegi', true], ['persegiPanjang', false], ['lingkaran', false]],
+      'Persegi memiliki empat sisi yang sama panjang.', { image: tile }),
+    text('3-4', 'Pintu berbentuk persegi panjang memiliki berapa sisi?',
+      [['4', true], ['3', false], ['0', false]],
+      'Persegi panjang memiliki empat sisi.', { image: door }),
+    grid('3-5', 'single', 'Roda sepeda jika dilihat dari samping berbentuk apa?',
+      [['lingkaran', true], ['segitiga', false], ['persegi', false]],
+      'Roda sepeda berbentuk lingkaran.', { image: bicycleWheel }),
   ],
 
   /* Level 4 - Pengelompokan & Pembagian Bentuk */
@@ -189,7 +201,10 @@ export const PULAU1_QUESTIONS: Record<number, QuizQuestion[]> = {
 export const PULAU1_META: Record<number, { subtitle: string; goal: string }> = {
   1: { subtitle: 'Gerbang Pulau Bentuk', goal: 'Mengenali lingkaran dan persegi pada benda di sekitarmu.' },
   2: { subtitle: 'Jembatan Sudut Siku', goal: 'Mengenali segitiga dan persegi panjang pada benda sehari-hari.' },
-  3: { subtitle: 'Lembah Benda Sekitar', goal: 'Mengidentifikasi bentuk dari gambar dan benda nyata.' },
+  3: {
+    subtitle: 'Hutan Bentuk',
+    goal: 'Cari objek di hutan: jam, atap rumah, dan ubin dengan bentuk yang sesuai.',
+  },
   4: { subtitle: 'Bukit Potong & Gabung', goal: 'Mengelompokkan, memotong, dan menggabungkan bentuk dasar.' },
   5: { subtitle: 'Sungai Lurus & Lengkung', goal: 'Membedakan sisi lurus dan sisi lengkung.' },
   6: { subtitle: 'Menara Ujian Pulau', goal: 'Mengulang semua bentuk dasar sebelum ke Hutan Segi Empat.' },

@@ -132,7 +132,10 @@ export default function QuizScene({ config, lives, maxLives, onWrongAnswer, onEx
             </div>
           )}
 
-          <div className={`quiz-options quiz-options--${q.layout}`} role={q.type === 'multi' ? 'group' : 'radiogroup'}>
+          <div
+            className={`quiz-options quiz-options--${q.layout} ${q.optionsImageOnly ? 'quiz-options--image-only' : ''}`}
+            role={q.type === 'multi' ? 'group' : 'radiogroup'}
+          >
             {q.options.map((opt) => {
               const state = optionState(opt);
               const tone = opt.shape ? `quiz-option--tone-${opt.shape}` : '';
@@ -140,16 +143,19 @@ export default function QuizScene({ config, lives, maxLives, onWrongAnswer, onEx
                 <button
                   key={opt.id}
                   type="button"
-                  className={`quiz-option quiz-option--${q.layout} quiz-option--${state} ${tone}`}
+                  className={`quiz-option quiz-option--${q.layout} quiz-option--${state} ${tone} ${
+                    q.optionsImageOnly ? 'quiz-option--image-only' : ''
+                  }`}
                   style={opt.shape ? ({ '--tone': SHAPE_META[opt.shape].tint } as CSSProperties) : undefined}
                   onClick={() => toggle(opt)}
                   disabled={state === 'removed' || !answering}
                   aria-pressed={selected.includes(opt.id)}
+                  aria-label={q.optionsImageOnly ? opt.label : undefined}
                 >
                   {opt.image && <img className="quiz-option__img" src={opt.image} alt="" draggable={false} />}
                   {!opt.image && opt.emoji && <span className="quiz-option__emoji" aria-hidden="true">{opt.emoji}</span>}
-                  {opt.shape && <ShapeIcon kind={opt.shape} size={28} className="quiz-option__shape" />}
-                  <span className="quiz-option__label">{opt.label}</span>
+                  {opt.shape && <ShapeIcon kind={opt.shape} size={q.optionsImageOnly ? 64 : 28} className="quiz-option__shape" />}
+                  {!q.optionsImageOnly && <span className="quiz-option__label">{opt.label}</span>}
                   {renderMark(state)}
                 </button>
               );

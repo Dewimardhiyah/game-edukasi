@@ -12,7 +12,7 @@ import persegiPanjang from '../assets/persegi_panjang.png';
 import pintu from '../assets/pintu.png';
 import pizzaSlice from '../assets/pizza_slice.png';
 import rubik from '../assets/rubik.png';
-import rumah from '../assets/rumah_sederhana.png';
+import rumah from '../assets/atap.png';
 import segitiga from '../assets/segitiga.png';
 import setengahLingkaran from '../assets/setengah_lingkaran.png';
 

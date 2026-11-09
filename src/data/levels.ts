@@ -20,6 +20,7 @@ export interface QuizQuestion {
   prompt: string;
   visual?: { emoji?: string; shape?: ShapeKind; image?: string };
   options: ChoiceOption[];
+  optionsImageOnly?: boolean;
   explanation: string; // muncul setelah menjawab (benar maupun salah)
 }
 
@@ -53,7 +54,7 @@ export interface LevelConfig {
 /* ============ Konstanta dunia ============ */
 
 export const WORLD_W = 360;
-export const TOTAL_LEVELS = 30;
+export const TOTAL_LEVELS = 15;
 
 const ISLAND_NAMES = [
   'Pulau Bentuk',
@@ -63,7 +64,7 @@ const ISLAND_NAMES = [
   'Kastil Geometri',
 ];
 export const islandNameOf = (level: number) =>
-  ISLAND_NAMES[Math.min(ISLAND_NAMES.length - 1, Math.floor((level - 1) / 6))];
+  ISLAND_NAMES[Math.min(ISLAND_NAMES.length - 1, Math.floor((level - 1) / 3))];
 
 /* ============ Peta Eksplorasi: Level 1 ============ */
 
@@ -143,22 +144,7 @@ const PULAU1_EXPLORE: Record<number, ExploreLevel> = {
 
 /* ============ Konfigurasi level ============ */
 
-const LEVELS: Record<number, LevelConfig> = Object.fromEntries(
-  [1, 2, 3, 4, 5, 6].map((n) => [
-    n,
-    {
-      number: n,
-      title: `Level ${n}`,
-      subtitle: PULAU1_META[n].subtitle,
-      goal: PULAU1_META[n].goal,
-      duration: '3-5 menit',
-      explore: PULAU1_EXPLORE[n],
-      questions: PULAU1_QUESTIONS[n],
-    } satisfies LevelConfig,
-  ]),
-);
-
-/* ============ Soal dari bank (Level 3-30) ============ */
+/* ============ Soal dari bank ============ */
 
 /** Pengacak deterministik: urutan pilihan selalu sama untuk soal yang sama. */
 function seededShuffle<T>(arr: T[], seed: number): T[] {
@@ -186,22 +172,29 @@ function bankQuestions(level: number): QuizQuestion[] {
   });
 }
 
-/**
- * Level 1-2 punya isi sendiri (soal interaktif + peta eksplorasi).
- * Level 3-30 memakai soal dari bank (bankSoal.ts). Peta eksplorasinya masih
- * memakai cermin Level 1/2 secara bergantian sampai peta aslinya dibuat.
- */
+/** Gabungkan setiap dua level lama agar semua materi muat dalam 15 level. */
 export function getLevelConfig(level: number): LevelConfig {
-  const own = LEVELS[level];
-  if (own) return own;
-  const base = LEVELS[level % 2 === 1 ? 3 : 4];
-  const title = LEVEL_TITLES[level] ?? islandNameOf(level);
+  const firstOriginalLevel = level * 2 - 1;
+  const secondOriginalLevel = level * 2;
+  const isFirstIsland = level <= 3;
+  const firstTitle = LEVEL_TITLES[firstOriginalLevel] ?? islandNameOf(level);
+  const secondTitle = LEVEL_TITLES[secondOriginalLevel] ?? islandNameOf(level);
+  const exploreLevel = isFirstIsland ? firstOriginalLevel : level % 2 === 1 ? 3 : 4;
+  const questions = isFirstIsland
+    ? level <= 3
+      ? [...PULAU1_QUESTIONS[level]]
+      : [...PULAU1_QUESTIONS[firstOriginalLevel], ...PULAU1_QUESTIONS[secondOriginalLevel]]
+    : [...bankQuestions(firstOriginalLevel), ...bankQuestions(secondOriginalLevel)];
+
   return {
-    ...base,
     number: level,
     title: `Level ${level}`,
-    subtitle: title,
-    goal: `Selesaikan tantangan: ${title}.`,
-    questions: bankQuestions(level),
+    subtitle: isFirstIsland ? PULAU1_META[firstOriginalLevel].subtitle : firstTitle,
+    goal: isFirstIsland
+      ? `${PULAU1_META[firstOriginalLevel].goal} ${PULAU1_META[secondOriginalLevel].goal}`
+      : `Selesaikan tantangan: ${firstTitle} dan ${secondTitle}.`,
+    duration: '5-7 menit',
+    explore: PULAU1_EXPLORE[exploreLevel],
+    questions,
   };
 }
