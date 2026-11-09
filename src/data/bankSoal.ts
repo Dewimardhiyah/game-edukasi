@@ -1,8 +1,8 @@
 /**
-* Bank soal Level 1-30 (150 soal) - diolah dari PDF "Bank Soal Pulau Bentuk Terstruktur".
+ * Bank soal sumber Level 1-30 (150 soal) - dipetakan berpasangan ke 15 level permainan.
 * Format tiap soal: [nomor, pertanyaan, jawaban benar, [3 pengecoh]]
 * Urutan pilihan diacak otomatis di levels.ts, jadi jawaban benar tidak selalu di posisi yang sama.
-* Level 1-2 memakai soal interaktif buatan sendiri di levels.ts; bank ini dipakai mulai Level 3.
+ * Soal sumber Level 1-6 dibuat khusus di pulau1.ts; Level 7-30 memakai bank ini.
 */
 export type BankItem = [number, string, string, [string, string, string]];
 
@@ -248,6 +248,6 @@ export const BANK: Record<number, BankItem[]> = {
     [147, "Sebuah kastil digambar dari 1 persegi (sisi 10cm), 2 persegi panjang (4cm x 8cm), dan 3 segitiga (a=4cm, t=5cm). Luas totalnya...", "100 + 64 + 30 = 194 cm²", ["150 cm²", "220 cm²", "180 cm²"]],
     [148, "Mengapa pengetahuan tentang keliling dan luas penting saat membangun rumah atau kastil nyata?", "Untuk menghitung kebutuhan bahan bangunan", ["Agar warna rumah cerah", "Supaya rumah bisa berpindah tempat", "Tidak ada gunanya"]],
     [149, "Urutan kelima pulau petualangan geometri dari awal sampai akhir adalah...", "Pulau Bentuk → Hutan Segi Empat → Pegunungan Segitiga → Danau Lingkaran → Kastil Geometri", ["Kastil Geometri → Danau Lingkaran → Hutan Segi Empat → Pegunungan Segitiga → Pulau Bentuk", "Pulau Bentuk → Pegunungan Segitiga → Hutan Segi Empat → Kastil Geometri → Danau Lingkaran", "Semuanya acak"]],
-    [150, "Selamat! Kamu telah menaklukkan seluruh 30 Level di 5 Pulau Geometri. Apa gelar kehormatanmu?", "Master Geometri Pulau Bentuk!", ["Pemain Pemula", "Penjelajah Musim Panas", "Raja Angka"]],
+    [150, "Selamat! Kamu telah menaklukkan seluruh 15 Level di 5 Pulau Geometri. Apa gelar kehormatanmu?", "Master Geometri Pulau Bentuk!", ["Pemain Pemula", "Penjelajah Musim Panas", "Raja Angka"]],
   ],
 };

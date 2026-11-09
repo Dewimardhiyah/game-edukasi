@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { Preferences } from '@capacitor/preferences';
+import { useEffect, useState } from 'react';
 
 import GameHeader from './components/GameHeader';
 import DailyMission from './components/DailyMission';
@@ -19,20 +20,96 @@ import type { ExploreOutcome, LevelResult, QuizOutcome, Screen, Wallet } from '.
 import './App.css';
 
 const MISSION_TARGET = 3;
+const PROGRESS_KEY = 'game-edukasi-progress';
+
+interface PlayerProgress {
+  levelStars: Record<number, number>;
+  wallet: Wallet;
+  missionDone: number;
+}
+
+const INITIAL_PROGRESS: PlayerProgress = {
+  levelStars: {},
+  wallet: { stars: 120, diamonds: 45, coins: 0, xp: 260 },
+  missionDone: 1,
+};
+
+function isPlayerProgress(value: unknown): value is PlayerProgress {
+  if (typeof value !== 'object' || value === null) return false;
+  const progress = value as Record<string, unknown>;
+  const wallet = progress.wallet;
+  const levelStars = progress.levelStars;
+
+  if (
+    typeof progress.missionDone !== 'number' ||
+    !Number.isInteger(progress.missionDone) ||
+    progress.missionDone < 0 ||
+    progress.missionDone > MISSION_TARGET ||
+    typeof wallet !== 'object' ||
+    wallet === null ||
+    typeof levelStars !== 'object' ||
+    levelStars === null ||
+    Array.isArray(levelStars)
+  ) {
+    return false;
+  }
+
+  const storedWallet = wallet as Record<string, unknown>;
+  if (!['stars', 'diamonds', 'coins', 'xp'].every(
+    (key) => typeof storedWallet[key] === 'number' && Number.isFinite(storedWallet[key]),
+  )) {
+    return false;
+  }
+
+  return Object.entries(levelStars).every(([level, stars]) =>
+    Number.isInteger(Number(level)) &&
+    Number(level) >= 1 &&
+    Number(level) <= TOTAL_LEVELS &&
+    typeof stars === 'number' &&
+    Number.isInteger(stars) &&
+    stars >= 0 &&
+    stars <= 3,
+  );
+}
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('beranda');
-
-  // Progres pemain
-  const [levelStars, setLevelStars] = useState<Record<number, number>>({});
-  const [wallet, setWallet] = useState<Wallet>({ stars: 120, diamonds: 45, coins: 0, xp: 260 });
-  const [missionDone, setMissionDone] = useState(1);
+  const [progress, setProgress] = useState<PlayerProgress>(INITIAL_PROGRESS);
+  const [progressLoaded, setProgressLoaded] = useState(false);
+  const { levelStars, wallet, missionDone } = progress;
 
   // Sesi level yang sedang dimainkan
   const [selectedLevel, setSelectedLevel] = useState(1);
   const [exploreOutcome, setExploreOutcome] = useState<ExploreOutcome | null>(null);
   const [result, setResult] = useState<LevelResult | null>(null);
   const [attempt, setAttempt] = useState(0); // naik setiap level diulang -> scene di-mount ulang
+
+  useEffect(() => {
+    let active = true;
+
+    const loadProgress = async () => {
+      try {
+        const { value } = await Preferences.get({ key: PROGRESS_KEY });
+        if (value !== null) {
+          const parsed: unknown = JSON.parse(value);
+          if (isPlayerProgress(parsed)) {
+            if (active) setProgress(parsed);
+          } else {
+            console.error('Data progres tersimpan tidak valid.');
+          }
+        }
+      } catch (error) {
+        console.error('Gagal memuat progres permainan.', error);
+      } finally {
+        if (active) setProgressLoaded(true);
+      }
+    };
+
+    void loadProgress();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const config = getLevelConfig(selectedLevel);
   const isTabScreen = TAB_SCREENS.includes(screen);
@@ -56,7 +133,7 @@ export default function App() {
     setScreen('quiz');
   };
 
-  const handleQuizComplete = (quiz: QuizOutcome) => {
+  const handleQuizComplete = async (quiz: QuizOutcome) => {
     const outcome: ExploreOutcome = exploreOutcome ?? {
       shapes: 0,
       shapesTotal: config.explore.shapes.length,
@@ -64,16 +141,32 @@ export default function App() {
     };
     const r = calcResult(selectedLevel, outcome, quiz);
     const previousBest = levelStars[selectedLevel] ?? 0;
+    const nextProgress: PlayerProgress = {
+      ...progress,
+      levelStars: {
+        ...levelStars,
+        [selectedLevel]: Math.max(previousBest, r.stars),
+      },
+      wallet: {
+        ...wallet,
+        stars: wallet.stars + Math.max(0, r.stars - previousBest),
+        coins: wallet.coins + r.coins,
+        xp: wallet.xp + r.xp,
+      },
+      missionDone: r.stars === 3
+        ? Math.min(MISSION_TARGET, missionDone + 1)
+        : missionDone,
+    };
 
-    setLevelStars((s) => ({ ...s, [selectedLevel]: Math.max(previousBest, r.stars) }));
-    setWallet((w) => ({
-      ...w,
-      stars: w.stars + Math.max(0, r.stars - previousBest), // hanya bintang baru yang dihitung
-      coins: w.coins + r.coins,
-      xp: w.xp + r.xp,
-    }));
-    if (r.stars === 3) setMissionDone((m) => Math.min(MISSION_TARGET, m + 1));
-
+    setProgress(nextProgress);
+    try {
+      await Preferences.set({
+        key: PROGRESS_KEY,
+        value: JSON.stringify(nextProgress),
+      });
+    } catch (error) {
+      console.error('Gagal menyimpan progres permainan.', error);
+    }
     setResult(r);
     setScreen('hasil');
   };
@@ -85,6 +178,10 @@ export default function App() {
   };
 
   /* ---------- Render ---------- */
+
+  if (!progressLoaded) {
+    return <div className="mobile-container">Memuat progres permainan...</div>;
+  }
 
   return (
     <div
