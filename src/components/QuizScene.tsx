@@ -7,6 +7,7 @@ import { POINTS } from '../utils/scoring';
 import type { QuizOutcome } from '../types';
 
 import GameButton from './GameButton';
+import LivesBar from './LivesBar';
 import PauseButton from './PauseButton';
 import PauseModal from './PauseModal';
 import ShapeIcon from './ShapeIcon';
@@ -16,6 +17,9 @@ import '../styles/quiz-scene.css';
 
 interface QuizSceneProps {
   config: LevelConfig;
+  lives: number;
+  maxLives: number;
+  onWrongAnswer: () => void;
   onExit: () => void;
   onComplete: (outcome: QuizOutcome) => void;
 }
@@ -27,14 +31,13 @@ const isAnswerCorrect = (q: QuizQuestion, selected: string[]) => {
   return correctIds.length === selected.length && correctIds.every((id) => selected.includes(id));
 };
 
-export default function QuizScene({ config, onExit, onComplete }: QuizSceneProps) {
+export default function QuizScene({ config, lives, maxLives, onWrongAnswer, onExit, onComplete }: QuizSceneProps) {
   const questions = config.questions;
   const total = questions.length;
 
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [phase, setPhase] = useState<Phase>('answering');
-  const [failedBefore, setFailedBefore] = useState(false); // sudah pernah salah di soal ini
   const [removed, setRemoved] = useState<string[]>([]); // opsi yang disingkirkan petunjuk
   const [firstTry, setFirstTry] = useState(0);
   const [hintUsed, setHintUsed] = useState(false);
@@ -56,16 +59,11 @@ export default function QuizScene({ config, onExit, onComplete }: QuizSceneProps
   const check = () => {
     if (isAnswerCorrect(q, selected)) {
       setPhase('correct');
-      if (!failedBefore) setFirstTry((n) => n + 1);
+      setFirstTry((n) => n + 1);
     } else {
       setPhase('wrong');
-      setFailedBefore(true);
+      onWrongAnswer();
     }
-  };
-
-  const retry = () => {
-    setSelected([]);
-    setPhase('answering');
   };
 
   const next = () => {
@@ -76,7 +74,6 @@ export default function QuizScene({ config, onExit, onComplete }: QuizSceneProps
     setIndex((i) => i + 1);
     setSelected([]);
     setPhase('answering');
-    setFailedBefore(false);
     setRemoved([]);
   };
 
@@ -106,17 +103,21 @@ export default function QuizScene({ config, onExit, onComplete }: QuizSceneProps
     return null;
   };
 
-  const progress = ((index + (phase === 'correct' ? 1 : 0)) / total) * 100;
+  const progress = ((index + (answering ? 0 : 1)) / total) * 100;
 
   return (
     <section className="game-screen quiz-scene" aria-label="Soal tantangan">
       <header className="quiz-scene__top">
         <PauseButton onClick={() => setPaused(true)} />
-        <div className="quiz-scene__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={index + (phase === 'correct' ? 1 : 0)}>
+        <div className="quiz-scene__progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={index + (answering ? 0 : 1)}>
           <div className="quiz-scene__progress-fill" style={{ width: `${progress}%` }} />
         </div>
         <span className="quiz-scene__count">{index + 1}/{total}</span>
       </header>
+      <div className="quiz-scene__lives">
+        <span className="quiz-scene__level">Level {config.number}</span>
+        <LivesBar lives={lives} max={maxLives} />
+      </div>
 
       <div className="quiz-scene__body">
         <div className="quiz-card">
@@ -162,10 +163,8 @@ export default function QuizScene({ config, onExit, onComplete }: QuizSceneProps
           <div className={`quiz-feedback quiz-feedback--${phase}`} role="status">
             <strong>
               {phase === 'correct'
-                ? failedBefore
-                  ? 'Benar! Kali ini tanpa poin.'
-                  : `Hebat! +${POINTS.correctAnswer} poin`
-                : 'Belum tepat, coba lagi ya.'}
+                ? `Hebat! +${POINTS.correctAnswer} poin`
+                : 'Belum tepat.'}
             </strong>
             <p>{q.explanation}</p>
           </div>
@@ -179,9 +178,8 @@ export default function QuizScene({ config, onExit, onComplete }: QuizSceneProps
           {answering && (
             <GameButton variant="green" onClick={check} disabled={selected.length === 0}>Periksa</GameButton>
           )}
-          {phase === 'wrong' && <GameButton variant="yellow" onClick={retry}>Coba Lagi</GameButton>}
-          {phase === 'correct' && (
-            <GameButton variant="green" onClick={next}>{isLast ? 'Lihat Hasil' : 'Lanjut'}</GameButton>
+          {phase !== 'answering' && lives > 0 && (
+            <GameButton variant="green" onClick={next}>{isLast ? 'Lihat Hasil' : 'Soal Berikutnya'}</GameButton>
           )}
         </div>
       </footer>
