@@ -24,26 +24,40 @@ const MISSION_TARGET = 3;
 
 const MAX_LIVES = 3;
 const PROGRESS_KEY = 'game-edukasi-progress';
+const PROGRESS_VERSION = 3;
+const LEGACY_INITIAL_XP = 260;
 
 interface PlayerProgress {
+  version: typeof PROGRESS_VERSION;
   levelStars: Record<number, number>;
   wallet: Wallet;
   missionDone: number;
 }
 
+interface StoredPlayerProgress {
+  version?: number;
+  levelStars: Record<number, number>;
+  wallet: Wallet & { diamonds?: number };
+  missionDone: number;
+}
+
 const INITIAL_PROGRESS: PlayerProgress = {
+  version: PROGRESS_VERSION,
   levelStars: {},
-  wallet: { stars: 120, diamonds: 45, coins: 0, xp: 260 },
+  wallet: { stars: 0, coins: 0, xp: 0 },
   missionDone: 1,
 };
 
-function isPlayerProgress(value: unknown): value is PlayerProgress {
+function isPlayerProgress(value: unknown): value is StoredPlayerProgress {
   if (typeof value !== 'object' || value === null) return false;
   const progress = value as Record<string, unknown>;
   const wallet = progress.wallet;
   const levelStars = progress.levelStars;
 
   if (
+    (progress.version !== undefined &&
+      progress.version !== 1 &&
+      progress.version !== PROGRESS_VERSION) ||
     typeof progress.missionDone !== 'number' ||
     !Number.isInteger(progress.missionDone) ||
     progress.missionDone < 0 ||
@@ -58,9 +72,16 @@ function isPlayerProgress(value: unknown): value is PlayerProgress {
   }
 
   const storedWallet = wallet as Record<string, unknown>;
-  if (!['stars', 'diamonds', 'coins', 'xp'].every(
+  if (!['stars', 'coins', 'xp'].every(
     (key) => typeof storedWallet[key] === 'number' && Number.isFinite(storedWallet[key]),
   )) {
+    return false;
+  }
+
+  if (
+    storedWallet.diamonds !== undefined &&
+    (typeof storedWallet.diamonds !== 'number' || !Number.isFinite(storedWallet.diamonds))
+  ) {
     return false;
   }
 
@@ -98,7 +119,33 @@ export default function App() {
         if (value !== null) {
           const parsed: unknown = JSON.parse(value);
           if (isPlayerProgress(parsed)) {
-            if (active) setProgress(parsed);
+            const needsMigration = parsed.version !== PROGRESS_VERSION;
+            const migratedProgress: PlayerProgress = {
+              ...parsed,
+              version: PROGRESS_VERSION,
+              wallet: {
+                stars: Object.values(parsed.levelStars).reduce((total, stars) => total + stars, 0),
+                coins: parsed.wallet.coins,
+                xp: needsMigration
+                  ? Math.max(
+                    0,
+                    parsed.wallet.xp -
+                      (parsed.version === undefined || parsed.version === 1 ? LEGACY_INITIAL_XP : 0),
+                  )
+                  : parsed.wallet.xp,
+              },
+            };
+            if (active) setProgress(migratedProgress);
+            if (needsMigration) {
+              try {
+                await Preferences.set({
+                  key: PROGRESS_KEY,
+                  value: JSON.stringify(migratedProgress),
+                });
+              } catch (error) {
+                console.error('Gagal memperbarui progres permainan.', error);
+              }
+            }
           } else {
             console.error('Data progres tersimpan tidak valid.');
           }
@@ -149,15 +196,16 @@ export default function App() {
     };
     const r = calcResult(selectedLevel, outcome, quiz);
     const previousBest = levelStars[selectedLevel] ?? 0;
+    const nextLevelStars = {
+      ...levelStars,
+      [selectedLevel]: Math.max(previousBest, r.stars),
+    };
     const nextProgress: PlayerProgress = {
       ...progress,
-      levelStars: {
-        ...levelStars,
-        [selectedLevel]: Math.max(previousBest, r.stars),
-      },
+      levelStars: nextLevelStars,
       wallet: {
         ...wallet,
-        stars: wallet.stars + Math.max(0, r.stars - previousBest),
+        stars: Object.values(nextLevelStars).reduce((total, stars) => total + stars, 0),
         coins: wallet.coins + r.coins,
         xp: wallet.xp + r.xp,
       },
@@ -180,6 +228,7 @@ export default function App() {
   };
 
   const handleContinue = () => {
+    if (result && result.stars < 2) return;
     const next = Math.min(TOTAL_LEVELS, selectedLevel + 1);
     setSelectedLevel(next);
     setScreen('detail');
@@ -201,6 +250,7 @@ export default function App() {
         <>
           <GameHeader
             stars={wallet.stars}
+            coins={wallet.coins}
             playerLevel={playerLevel}
             xpPercent={xpPercent}
           />

@@ -99,6 +99,14 @@
   margin-top: auto;
   padding-bottom: 20px;
 }
+.result-scene__retry-note {
+  margin: 0;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
 .result-scene__link {
   border: 0;
   background: none;

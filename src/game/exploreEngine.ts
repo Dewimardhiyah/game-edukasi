@@ -13,7 +13,6 @@ const JUMP_BUFFER = 0.12; // toleransi menekan lompat sesaat sebelum mendarat
 const HALF_W = 13;
 const BODY_H = 44;
 const INVULNERABLE_TIME = 1.1;
-const BLOCKED_COOLDOWN = 2.5;
 
 // Area sprite maskot yang terlihat di maskot.png (420x594, ada ruang transparan)
 const SPRITE = { sx: 29, sy: 139, sw: 381, sh: 403 };
@@ -23,7 +22,6 @@ export interface ExploreCallbacks {
   onCollectCoin: (total: number) => void;
   onHazard: () => void;
   onCheckpoint: () => void;
-  onGoalBlocked: (missing: number) => void;
   onGoal: () => void;
 }
 
@@ -71,7 +69,6 @@ export class ExploreEngine {
   private coyote = 0;
   private jumpBuffer = 0;
   private invulnerable = 0;
-  private blockedCooldown = 0;
 
   private left = false;
   private right = false;
@@ -152,7 +149,6 @@ export class ExploreEngine {
   private step(dt: number) {
     this.time += dt;
     this.invulnerable = Math.max(0, this.invulnerable - dt);
-    this.blockedCooldown = Math.max(0, this.blockedCooldown - dt);
 
     // Gerak horizontal dengan percepatan halus
     const dir = (this.right ? 1 : 0) - (this.left ? 1 : 0);
@@ -272,15 +268,9 @@ export class ExploreEngine {
     const g = this.level.goal;
     const near = Math.abs(this.px - g.x) < 24 && this.py > g.y - 80 && this.py < g.y + 30;
     if (!near) return;
-    const total = this.level.shapes.length;
-    if (this.shapesCollected >= total) {
-      this.finished = true;
-      this.burst(g.x, g.y - 60, '#ffd84a');
-      this.cb.onGoal();
-    } else if (this.blockedCooldown <= 0) {
-      this.blockedCooldown = BLOCKED_COOLDOWN;
-      this.cb.onGoalBlocked(total - this.shapesCollected);
-    }
+    this.finished = true;
+    this.burst(g.x, g.y - 60, '#ffd84a');
+    this.cb.onGoal();
   }
 
   /* ---------- Partikel ---------- */
@@ -435,15 +425,12 @@ export class ExploreEngine {
   private drawGoal() {
     const { ctx } = this;
     const g = this.level.goal;
-    const ready = this.shapesCollected >= this.level.shapes.length;
     ctx.save();
-    if (ready) {
-      const glow = ctx.createRadialGradient(g.x, g.y - 50, 4, g.x, g.y - 50, 48);
-      glow.addColorStop(0, 'rgba(255,230,120,0.75)');
-      glow.addColorStop(1, 'rgba(255,230,120,0)');
-      ctx.fillStyle = glow;
-      ctx.fillRect(g.x - 50, g.y - 100, 100, 100);
-    }
+    const glow = ctx.createRadialGradient(g.x, g.y - 50, 4, g.x, g.y - 50, 48);
+    glow.addColorStop(0, 'rgba(255,230,120,0.75)');
+    glow.addColorStop(1, 'rgba(255,230,120,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(g.x - 50, g.y - 100, 100, 100);
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 4;
     ctx.beginPath();
@@ -451,7 +438,7 @@ export class ExploreEngine {
     ctx.lineTo(g.x, g.y - 78);
     ctx.stroke();
     const wave = Math.sin(this.time * 5) * 3;
-    ctx.fillStyle = ready ? '#ef3d4a' : '#9aa7b5';
+    ctx.fillStyle = '#ef3d4a';
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.beginPath();

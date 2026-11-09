@@ -172,7 +172,7 @@ function bankQuestions(level: number): QuizQuestion[] {
   });
 }
 
-/** Gabungkan setiap dua level lama agar semua materi muat dalam 15 level. */
+/** Level 4-15 mengambil lima soal yang disiapkan khusus untuk tiap level. */
 export function getLevelConfig(level: number): LevelConfig {
   const firstOriginalLevel = level * 2 - 1;
   const secondOriginalLevel = level * 2;
@@ -181,10 +181,8 @@ export function getLevelConfig(level: number): LevelConfig {
   const secondTitle = LEVEL_TITLES[secondOriginalLevel] ?? islandNameOf(level);
   const exploreLevel = isFirstIsland ? firstOriginalLevel : level % 2 === 1 ? 3 : 4;
   const questions = isFirstIsland
-    ? level <= 3
-      ? [...PULAU1_QUESTIONS[level]]
-      : [...PULAU1_QUESTIONS[firstOriginalLevel], ...PULAU1_QUESTIONS[secondOriginalLevel]]
-    : [...bankQuestions(firstOriginalLevel), ...bankQuestions(secondOriginalLevel)];
+    ? [...PULAU1_QUESTIONS[level]]
+    : bankQuestions(level);
 
   return {
     number: level,

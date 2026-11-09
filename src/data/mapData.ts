@@ -85,6 +85,6 @@ export function computeLayout(w: number, h: number) {
  */
 export function getLevelStatus(level: number, levelStars: Record<number, number>): LevelStatus {
   if (levelStars[level] !== undefined) return 'completed';
-  if (level === 1 || levelStars[level - 1] !== undefined) return 'unlocked';
+  if (level === 1 || (levelStars[level - 1] ?? 0) >= 2) return 'unlocked';
   return 'locked';
 }

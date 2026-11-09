@@ -1,9 +1,9 @@
 interface PlayerProfileProps {
-  level?: number;
-  xpPercent?: number;
+  level: number;
+  xpPercent: number;
 }
 
-export default function PlayerProfile({ level = 3, xpPercent = 60 }: PlayerProfileProps) {
+export default function PlayerProfile({ level, xpPercent }: PlayerProfileProps) {
   return (
     <div className="player-profile">
       <div className="avatar-wrapper">

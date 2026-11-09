@@ -86,7 +86,6 @@ export default function ExploreScene({ config, onExit, onComplete }: ExploreScen
             },
             onHazard: () => showToast('Awas duri! Kembali ke checkpoint.'),
             onCheckpoint: () => showToast('Checkpoint tersimpan'),
-            onGoalBlocked: (missing) => showToast(`Masih ada ${missing} bentuk yang belum terkumpul`),
             onGoal: () => {
               showToast('Kamu sampai di tantangan!');
               window.setTimeout(() => {
@@ -177,7 +176,7 @@ export default function ExploreScene({ config, onExit, onComplete }: ExploreScen
       </header>
 
       <div className="explore-scene__goal" role="status" aria-live="polite">
-        <p className="explore-scene__goal-title">Kumpulkan semua bentuk!</p>
+        <p className="explore-scene__goal-title">Kumpulkan bentuk untuk bonus poin</p>
         <div className="explore-scene__slots">
           {shapes.map((s, i) => (
             <ShapeIcon key={i} kind={s.kind} size={26} muted={!collected[i]} />

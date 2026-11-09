@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface IconProps {
   name: string;
   className?: string;
@@ -9,6 +7,7 @@ export default function Icon({ name, className = '' }: IconProps) {
   const icons: Record<string, string> = {
     star: '⭐',
     diamond: '💎',
+    coin: '🪙',
     settings: '⚙️',
     mission: '📋',
     play: '▶',

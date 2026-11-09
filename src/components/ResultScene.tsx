@@ -28,6 +28,7 @@ const CONFETTI = [
 
 export default function ResultScene({ result, hasNext, onContinue, onRetry, onMap }: ResultSceneProps) {
   const { breakdown } = result;
+  const mustRetry = result.stars === 1;
 
   return (
     <section className="game-screen result-scene" aria-label="Hasil level">
@@ -72,11 +73,22 @@ export default function ResultScene({ result, hasNext, onContinue, onRetry, onMa
       </div>
 
       <div className="result-scene__actions">
-        <GameButton variant="green" block onClick={hasNext ? onContinue : onMap}>
-          {hasNext ? 'Lanjutkan' : 'Kembali ke Peta'}
-        </GameButton>
-        <GameButton variant="white" block onClick={onRetry}>Ulangi level</GameButton>
-        {hasNext && (
+        {mustRetry ? (
+          <>
+            <p className="result-scene__retry-note" role="status">
+              Dapatkan minimal 2 bintang untuk membuka level berikutnya.
+            </p>
+            <GameButton variant="green" block onClick={onRetry}>Ulangi level</GameButton>
+          </>
+        ) : (
+          <>
+            <GameButton variant="green" block onClick={hasNext ? onContinue : onMap}>
+              {hasNext ? 'Lanjutkan' : 'Kembali ke Peta'}
+            </GameButton>
+            <GameButton variant="white" block onClick={onRetry}>Ulangi level</GameButton>
+          </>
+        )}
+        {hasNext && !mustRetry && (
           <button type="button" className="result-scene__link" onClick={onMap}>Kembali ke peta</button>
         )}
       </div>

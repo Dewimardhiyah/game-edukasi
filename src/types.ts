@@ -40,7 +40,6 @@ export interface LevelResult {
 
 export interface Wallet {
   stars: number;
-  diamonds: number;
   coins: number;
   xp: number;
 }
