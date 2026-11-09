@@ -1,6 +1,7 @@
 import { Preferences } from '@capacitor/preferences';
 import { useEffect, useState } from 'react';
 
+import LivesBar from './components/LivesBar';
 import GameHeader from './components/GameHeader';
 import DailyMission from './components/DailyMission';
 import AdventureScene from './components/AdventureScene';
@@ -20,6 +21,8 @@ import type { ExploreOutcome, LevelResult, QuizOutcome, Screen, Wallet } from '.
 import './App.css';
 
 const MISSION_TARGET = 3;
+
+const MAX_LIVES = 3;
 const PROGRESS_KEY = 'game-edukasi-progress';
 
 interface PlayerProgress {
@@ -78,10 +81,12 @@ export default function App() {
   const [progressLoaded, setProgressLoaded] = useState(false);
   const { levelStars, wallet, missionDone } = progress;
 
+
   // Sesi level yang sedang dimainkan
   const [selectedLevel, setSelectedLevel] = useState(1);
   const [exploreOutcome, setExploreOutcome] = useState<ExploreOutcome | null>(null);
   const [result, setResult] = useState<LevelResult | null>(null);
+  const [lives, setLives] = useState(MAX_LIVES);
   const [attempt, setAttempt] = useState(0); // naik setiap level diulang -> scene di-mount ulang
 
   useEffect(() => {
@@ -124,6 +129,7 @@ export default function App() {
 
   const handleStartLevel = () => {
     setExploreOutcome(null);
+    setLives(MAX_LIVES);
     setAttempt((n) => n + 1);
     setScreen('explore');
   };
@@ -132,6 +138,8 @@ export default function App() {
     setExploreOutcome(outcome);
     setScreen('quiz');
   };
+
+  const handleWrongAnswer = () => setLives((remaining) => Math.max(0, remaining - 1));
 
   const handleQuizComplete = async (quiz: QuizOutcome) => {
     const outcome: ExploreOutcome = exploreOutcome ?? {
@@ -193,7 +201,6 @@ export default function App() {
         <>
           <GameHeader
             stars={wallet.stars}
-            diamonds={wallet.diamonds}
             playerLevel={playerLevel}
             xpPercent={xpPercent}
           />
@@ -235,9 +242,28 @@ export default function App() {
         <QuizScene
           key={`quiz-${attempt}`}
           config={config}
+          lives={lives}
+          maxLives={MAX_LIVES}
+          onWrongAnswer={handleWrongAnswer}
           onExit={() => setScreen('peta')}
           onComplete={handleQuizComplete}
         />
+      )}
+
+      {screen === 'quiz' && lives === 0 && (
+        <div className="gameover-overlay">
+          <div className="gameover-card" role="dialog" aria-modal="true" aria-labelledby="gameover-title">
+            <LivesBar lives={0} max={MAX_LIVES} />
+            <h2 id="gameover-title">Nyawa habis!</h2>
+            <p>Mulai lagi permainan level ini untuk mencoba kembali.</p>
+            <button type="button" className="gameover-card__button gameover-card__button--retry" onClick={handleStartLevel}>
+              Main Lagi
+            </button>
+            <button type="button" className="gameover-card__button gameover-card__button--map" onClick={() => setScreen('peta')}>
+              Kembali ke Peta
+            </button>
+          </div>
+        </div>
       )}
 
       {screen === 'hasil' && result && (
